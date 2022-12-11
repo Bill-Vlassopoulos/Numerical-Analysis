@@ -1,0 +1,35 @@
+clear all;
+close all;
+clc
+
+A=[9.5 -2.5 0 -2 0; -2.5 11 -3.5 0 -5;0 -3.5 15.5 0 -4;-2 0 0 7 -3;0 -5 -4 -3 12;];
+b=[12 -16 14 10 -30]';
+
+
+d=diag(A);
+D=diag(d);
+L=tril(A,-1);
+U=triu(A,1);
+D_inv=diag(1./d);
+Norm=norm(D_inv*(L+U),2)
+
+
+X=zeros([5 2]);
+errors=zeros([5 1]);
+
+i=0;
+while true
+X(:,2)=-(D_inv*(L+U))*X(:,1)+D_inv*b;
+errors=X(:,2)-X(:,1);
+if abs(errors)<10^(-6)
+    errors
+    fprintf('Repetitions: %d',i);
+    break
+end
+X(:,1)=X(:,2);
+i=i+1;
+end
+
+solution=X(:,1)
+S=A\b
+Cond=cond(A)
